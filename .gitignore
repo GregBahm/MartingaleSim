@@ -1,0 +1,12 @@
+/Library/
+/Temp/
+/Builds/
+/MartingaleSim.csproj
+/MartingaleSim.Editor.csproj
+/MartingaleSim.Plugins.csproj
+/MartingaleSim.sln
+/Packages/
+/.vs/
+/com.unity.postprocessing.Editor.csproj
+/com.unity.postprocessing.Runtime.csproj
+/UnityPackageManager
