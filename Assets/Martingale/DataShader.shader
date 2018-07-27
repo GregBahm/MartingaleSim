@@ -41,6 +41,8 @@
 			{
 				float4 vertex : SV_POSITION;
 				float3 color : COLOR0;
+				float lowerHeight : TEXCOORD0;
+				float upperHeight : TEXCOORD1;
 			};
 
 			float4x4 _Transform;
@@ -55,12 +57,15 @@
 				StrokeSegment segmentEnd = _TheBuffer[instanceId - 1];
 
 				float x = lerp(segmentStart.unsortedIndex, segmentStart.sortedIndex, _SortStrength);
-				float ramp = (segmentStart.height - segmentEnd.height)  > 0;
 				v2g o;
 				o.StartPosition = float3(x, segmentStart.height, segmentStart.time);
 				o.EndPosition = float3(x, segmentEnd.height, segmentEnd.time);
 				o.End = segmentEnd.End;
-				o.Color = float3(segmentStart.sessionHeight, segmentStart.sessionValue, ramp);
+				float xColor = 1 - segmentStart.sessionHeight;
+				float yColor = segmentStart.sessionValue;
+				float zColor = .5;
+				o.Color = float3(xColor, yColor, zColor);
+				o.Color = pow(o.Color, 2);
 				if (segmentEnd.End)
 				{
 					o.StartPosition.yz = 0;
@@ -74,10 +79,12 @@
 			{
 				float3 strokeThickener = float3(_StrokeThickness, 0, 0);
 
-				float3 pointA = p[0].StartPosition + strokeThickener;
-				float3 pointB = p[0].EndPosition + strokeThickener;
-				float3 pointC = p[0].EndPosition - strokeThickener;
-				float3 pointD = p[0].StartPosition - strokeThickener;
+				float3 pointA = p[0].StartPosition;
+				float3 pointB = p[0].EndPosition;
+				float3 pointC = p[0].EndPosition;
+				pointC.y = 0;
+				float3 pointD = p[0].StartPosition;
+				pointD.y = 0;
 
 				pointA = mul(_Transform, float4(pointA, 1)).xyz;
 				pointB = mul(_Transform, float4(pointB, 1)).xyz;
@@ -87,23 +94,35 @@
 				g2f o;
 				o.color = p[0].Color;
 				o.vertex = UnityObjectToClipPos(pointB);
+				o.upperHeight = 0;
+				o.lowerHeight = p[0].EndPosition.y;
 				triStream.Append(o);
 
 				o.vertex = UnityObjectToClipPos(pointA);
+				o.lowerHeight = p[0].StartPosition.y;
 				triStream.Append(o);
 
 				o.vertex = UnityObjectToClipPos(pointC);
+				o.lowerHeight = 0;
+				o.upperHeight = p[0].EndPosition.y;
 				triStream.Append(o);
 
 				o.vertex = UnityObjectToClipPos(pointD);
+				o.upperHeight = p[0].StartPosition.y;
 				triStream.Append(o);
 			}
 			
 			fixed4 frag (g2f i) : SV_Target
 			{
-				return float4(i.color, 1) / 2;// *float4(0, .5, 1, 1) + 1;
+				float breakEvenStrip = i.lowerHeight > .134 && i.lowerHeight < .135;
+				float3 ret = i.color * float3(1, 1, i.lowerHeight);
+				ret += ret * pow(1 - i.upperHeight, 50);
+				ret += breakEvenStrip;
+				//ret = saturate(ret);
+				return float4(ret, 1);
 			}
 			ENDCG
 		}
 	}
+	Fallback "Diffuse"
 }

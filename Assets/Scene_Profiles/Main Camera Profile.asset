@@ -18,6 +18,7 @@ MonoBehaviour:
   - {fileID: 114560808113662350}
   - {fileID: 114665517935138346}
   - {fileID: 114499903339126142}
+  - {fileID: 114343388037108238}
 --- !u!114 &114105383820621306
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -29,7 +30,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a34fa72bd4185749832024e9c8010bf, type: 3}
   m_Name: ScreenSpaceReflections
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   enabled:
     overrideState: 1
     value: 1
@@ -54,6 +55,48 @@ MonoBehaviour:
   vignette:
     overrideState: 1
     value: 0
+--- !u!114 &114343388037108238
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48a79b01ea5641d4aa6daa2e23605641, type: 3}
+  m_Name: Bloom
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+  intensity:
+    overrideState: 1
+    value: 4.68
+  threshold:
+    overrideState: 1
+    value: 1.6
+  softKnee:
+    overrideState: 1
+    value: 0.879
+  diffusion:
+    overrideState: 1
+    value: 10
+  anamorphicRatio:
+    overrideState: 1
+    value: 1
+  color:
+    overrideState: 0
+    value: {r: 1, g: 1, b: 1, a: 1}
+  fastMode:
+    overrideState: 1
+    value: 1
+  dirtTexture:
+    overrideState: 0
+    value: {fileID: 0}
+  dirtIntensity:
+    overrideState: 0
+    value: 0
 --- !u!114 &114407788305221748
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -65,7 +108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1cb7e9e120078f43bce4f0b1be547a7, type: 3}
   m_Name: AmbientOcclusion
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   enabled:
     overrideState: 1
     value: 1
@@ -371,7 +414,7 @@ MonoBehaviour:
     value: 1
   focusDistance:
     overrideState: 1
-    value: 74.51
+    value: 2180.07
   aperture:
     overrideState: 1
     value: 1.1
@@ -392,7 +435,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b94fcd11afffcb142908bfcb1e261fba, type: 3}
   m_Name: MotionBlur
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   enabled:
     overrideState: 1
     value: 1
@@ -422,7 +465,7 @@ MonoBehaviour:
     value: 0
   color:
     overrideState: 1
-    value: {r: 0, g: 0.91724133, b: 1, a: 1}
+    value: {r: 1, g: 0, b: 0.6000004, a: 1}
   center:
     overrideState: 1
     value: {x: 0.5, y: 0.5}
