@@ -48,6 +48,7 @@
 			float4x4 _Transform;
 			float _StrokeThickness;
 			float _SortStrength;
+			float _BreakEvenPoint;
 
 			StructuredBuffer<StrokeSegment> _TheBuffer;
 
@@ -114,11 +115,15 @@
 			
 			fixed4 frag (g2f i) : SV_Target
 			{
-				float breakEvenStrip = i.lowerHeight > .134 && i.lowerHeight < .135;
+				float breakEvenStrip = 1 - (_BreakEvenPoint - i.lowerHeight) * 10;
+				breakEvenStrip = breakEvenStrip < 1 ? breakEvenStrip : 0;
+				breakEvenStrip = (pow(saturate(breakEvenStrip), 2));
 				float3 ret = i.color * float3(1, 1, i.lowerHeight);
+				//ret *= pow(i.lowerHeight, 2);
 				ret += ret * pow(1 - i.upperHeight, 50);
-				ret += breakEvenStrip;
-				//ret = saturate(ret);
+				ret += breakEvenStrip * -float3(.1, .1, .1);
+				ret = saturate(ret);
+				ret = i.lowerHeight > .005 ? ret : 1;
 				return float4(ret, 1);
 			}
 			ENDCG

@@ -14,6 +14,7 @@ public class Martingale : MonoBehaviour
 
     private float OddsOfWinning { get { return (float)OddsOutOfAThousand / 1000; } }
     public int Sessions = 1000;
+    public bool Resimulate;
 
     public Material DataMat;
     private const int BufferStride =
@@ -30,6 +31,7 @@ public class Martingale : MonoBehaviour
     private int _lastBetBase;
     private int _lastStartingCash;
     private int _lastOdds;
+    private float _breakEvenPoint;
 
     private struct DataPoint
     {
@@ -49,22 +51,11 @@ public class Martingale : MonoBehaviour
 
     private void Update()
     {
-        bool needsRefresh = GetNeedsRefresh();
-        if (needsRefresh)
+        if (Resimulate)
         {
+            Resimulate = false;
             UpdateData();
         }
-    }
-
-    private bool GetNeedsRefresh()
-    {
-        bool ret = _lastBetBase != BetBase
-            || _lastStartingCash != StartingCash
-            || _lastOdds != OddsOutOfAThousand;
-        _lastBetBase = BetBase;
-        _lastStartingCash = StartingCash;
-        _lastOdds = OddsOutOfAThousand;
-        return ret;
     }
 
     private void UpdateData()
@@ -80,6 +71,7 @@ public class Martingale : MonoBehaviour
         }
         _theBuffer = new ComputeBuffer(bufferSize, BufferStride);
         _theBuffer.SetData(data);
+        _breakEvenPoint = (float)StartingCash / sourceData.Max(item => item.CashHistory.Max());
     }
 
     private Session[] SortData(Session[] sourceData)
@@ -143,6 +135,7 @@ public class Martingale : MonoBehaviour
         DataMat.SetBuffer("_TheBuffer", _theBuffer);
         DataMat.SetMatrix("_Transform", transform.localToWorldMatrix);
         DataMat.SetFloat("_SortStrength", SortStrength);
+        DataMat.SetFloat("_BreakEvenPoint", _breakEvenPoint);
         DataMat.SetPass(0);
         Graphics.DrawProcedural(MeshTopology.Points, 1, bufferSize);
     }
